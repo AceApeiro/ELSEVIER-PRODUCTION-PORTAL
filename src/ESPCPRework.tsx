@@ -3,33 +3,39 @@ import { ApeiroLogo } from './components/ApeiroLogo';
 import { Database } from 'lucide-react';
 import Papa from 'papaparse';
 
-export default function ESPCPRework({ setCurrentProject }: { setCurrentProject: (project: string | null) => void }) {
+export default function ESPCPRework({
+  setCurrentProject,
+}: {
+  setCurrentProject: (project: string | null) => void;
+}) {
 
   const [reworkData, setReworkData] = useState<any[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRS-TPp-hkTBWJUds4OzF-N2glCpDhLgY52bYEx9DTmJZz5VqCFbPeRCrnVT0bF4AUHZgMIgOPKeqkh/pub?gid=8119884&single=true&output=csv')
-      .then(res => res.text())
-      .then(csv => {
+    fetch(
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRS-TPp-hkTBWJUds4OzF-N2glCpDhLgY52bYEx9DTmJZz5VqCFbPeRCrnVT0bF4AUHZgMIgOPKeqkh/pub?gid=8119884&single=true&output=csv'
+    )
+      .then((res) => res.text())
+      .then((csv) => {
         const parsed = Papa.parse(csv, {
           header: true,
-          skipEmptyLines: true
+          skipEmptyLines: true,
         });
 
         setReworkData(parsed.data as any[]);
         setDataLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setDataLoading(false);
       });
-
   }, []);
 
   return (
     <div className="relative w-full min-h-screen bg-black flex flex-col items-center">
 
+      {/* HEADER */}
       <div className="w-full flex justify-between items-center px-8 py-4 bg-[#050a10] border-b-2 border-[#00f2ff]/50 shadow-[0_0_30px_rgba(0,242,255,0.3)] z-50">
 
         <ApeiroLogo />
@@ -43,12 +49,14 @@ export default function ESPCPRework({ setCurrentProject }: { setCurrentProject: 
 
       </div>
 
+      {/* MAIN BODY */}
       <div className="flex-1 w-full relative">
 
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,242,255,0.1),black)] pointer-events-none z-0"></div>
 
         <div className="z-10 relative flex flex-col items-center p-8 w-full max-w-6xl mx-auto mt-10">
 
+          {/* DASHBOARD HEADER */}
           <div className="bg-[#050a10] border border-[#00f2ff]/50 p-6 rounded-lg w-full mb-8 shadow-[0_0_20px_rgba(0,242,255,0.2)]">
 
             <h2 className="text-2xl font-bold font-['Rajdhani'] text-[#00f2ff] tracking-widest">
@@ -61,15 +69,18 @@ export default function ESPCPRework({ setCurrentProject }: { setCurrentProject: 
 
           </div>
 
+          {/* DATA PANEL */}
           <div className="w-full bg-[#050a10]/80 border border-[#222] rounded-lg p-6 min-h-[400px]">
 
             {dataLoading ? (
 
               <div className="flex justify-center items-center h-full">
+
                 <div className="animate-pulse text-[#00f2ff] font-mono">
                   <Database className="inline h-4 w-4 mr-2" />
                   DATA SYNC IN PROGRESS...
                 </div>
+
               </div>
 
             ) : reworkData && reworkData.length > 0 ? (
@@ -80,9 +91,12 @@ export default function ESPCPRework({ setCurrentProject }: { setCurrentProject: 
 
                   <thead className="bg-[#0a0f1c] border-b border-[#00f2ff]/30">
                     <tr>
-                      {Object.keys(reworkData[0]).map(k => (
-                        <th key={k} className="p-3 text-[#00f2ff] font-mono tracking-widest whitespace-nowrap">
-                          {k}
+                      {Object.keys(reworkData[0]).map((key) => (
+                        <th
+                          key={key}
+                          className="p-3 text-[#00f2ff] font-mono tracking-widest whitespace-nowrap"
+                        >
+                          {key}
                         </th>
                       ))}
                     </tr>
