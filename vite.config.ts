@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => {
 
   return {
 
-    // ***** GITHUB PAGES FIX *****
     base: '/ELSEVIER-PRODUCTION-PORTAL/',
 
     plugins: [
@@ -26,11 +25,6 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
-    },
-
-    server: {
-      hmr:
-        process.env.DISABLE_HMR !== 'true',
     },
 
   };
