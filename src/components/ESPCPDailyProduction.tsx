@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import html2canvas from 'html2canvas';
 
 function parseNum(v: any) {
   if (v === null || v === undefined) return 0;
@@ -26,9 +27,83 @@ function getColorClass(val: number) {
 }
 
 export function ESPCPDailyProduction({ mayData }: { mayData: any[] }) {
-  const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
+  const [chartType, setChartType] = useState<"bar" | "line">("bar");
   const [showInactive, setShowInactive] = useState(false);
-  const [selectedAgent, setSelectedAgent] = useState<string>('__all__');
+  const [selectedAgent, setSelectedAgent] = useState<string>("__all__");
+  const [sortDatesDesc, setSortDatesDesc] = useState(true);
+
+  const downloadSnip = async (daysCount: number) => {
+    let headersToUse = [...tableHeaders];
+    if (sortDatesDesc) {
+       headersToUse = headersToUse.slice(0, daysCount);
+    } else {
+       headersToUse = headersToUse.slice(-daysCount);
+    }
+
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-10000px';
+    container.style.top = '0px';
+    container.style.width = '1200px';
+    container.style.backgroundColor = '#03040a';
+    container.style.color = '#fff';
+    container.style.padding = '20px';
+    container.style.fontFamily = 'monospace';
+    
+    const tableHtml = `
+      <h2 style="color:#00aaff; font-size: 24px; text-align: center; margin-bottom: 20px;">Agents Production (${daysCount}-Day Snip)</h2>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; white-space: nowrap;">
+        <thead style="background: rgba(0,0,0,0.5);">
+          <tr>
+            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #e0f7ff;">UID</th>
+            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #e0f7ff;">Name</th>
+            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #e0f7ff;">Total</th>
+            ${headersToUse.map(d => `<th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #e0f7ff;">${d}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${filteredAgents.map((a: any) => `
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05);">${a.uid}</td>
+              <td style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05);">${a.name}</td>
+              <td style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: white;">${fmt(a.total)}</td>
+              ${headersToUse.map(d => {
+                const val = a.days[d] || 0;
+                const color = val === 0 ? '#9aa6b2' : val >= 25 ? '#2dd36f' : '#ff3860';
+                return `<td style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: ${color};">${fmt(val)}</td>`;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+        <tfoot style="background: linear-gradient(90deg, rgba(255,165,0,0.25), rgba(255,215,0,0.15));">
+          <tr>
+            <td style="padding: 8px; border-top: 2px solid #ffa500; color: #ffd700; font-weight: bold;">⚡</td>
+            <td style="padding: 8px; border-top: 2px solid #ffa500; color: #ffd700; font-weight: bold;">DAILY TOTALS</td>
+            <td style="padding: 8px; border-top: 2px solid #ffa500; font-weight: bold; color: #ffd700;">${fmt(Object.values(calculatedDailyTotals).reduce((s: any, v: any) => s + v, 0))}</td>
+            ${headersToUse.map(d => `<td style="padding: 8px; border-top: 2px solid #ffa500; font-weight: bold; color: white;">${fmt(calculatedDailyTotals[d] || 0)}</td>`).join('')}
+          </tr>
+        </tfoot>
+      </table>
+    `;
+
+    container.innerHTML = tableHtml;
+    document.body.appendChild(container);
+
+    try {
+      const canvas = await html2canvas(container, { backgroundColor: '#03040a', scale: 2 });
+      const imgData = canvas.toDataURL('image/jpeg', 0.9);
+      const link = document.createElement('a');
+      link.href = imgData;
+      link.download = `production_snip_${daysCount}days.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      document.body.removeChild(container);
+    }
+  };
 
   const { agentObjects, inactiveObjects, calculatedDailyTotals, dayNumbers, summaryData } = useMemo(() => {
     if (!mayData || mayData.length < 2) {
@@ -142,7 +217,11 @@ export function ESPCPDailyProduction({ mayData }: { mayData: any[] }) {
   let lastDayToShow = Math.min(yesterday.getDate(), maxHeader);
   if (lastDayToShow < 1) lastDayToShow = 1;
   const tableHeaders = [];
-  for (let d = lastDayToShow; d >= 1; d--) tableHeaders.push(d);
+  if (sortDatesDesc) {
+    for (let d = lastDayToShow; d >= 1; d--) tableHeaders.push(d);
+  } else {
+    for (let d = 1; d <= lastDayToShow; d++) tableHeaders.push(d);
+  }
 
   return (
     <div className="flex-1 w-full overflow-y-auto px-4 py-8 bg-[#03040a]">
@@ -168,10 +247,18 @@ export function ESPCPDailyProduction({ mayData }: { mayData: any[] }) {
           </button>
           <button 
             onClick={() => setChartType(prev => prev === 'bar' ? 'line' : 'bar')}
-            className="bg-transparent border border-white/10 text-white rounded-lg px-4 py-2 text-sm tracking-wider hover:bg-white/5 ml-auto"
+            className="bg-transparent border border-white/10 text-white rounded-lg px-4 py-2 text-sm tracking-wider hover:bg-white/5 ml-auto cursor-pointer"
           >
             Switch to {chartType === 'bar' ? 'Line' : 'Bar'} Chart
           </button>
+          <div className="flex gap-2">
+            <button onClick={() => downloadSnip(30)} className="bg-[#00aaff] text-black font-bold rounded-lg px-4 py-2 text-sm hover:brightness-110 shadow-[0_0_10px_rgba(0,170,255,0.4)] cursor-pointer">
+              30-DAY SNIP
+            </button>
+             <button onClick={() => downloadSnip(7)} className="bg-[#00aaff] text-black font-bold rounded-lg px-4 py-2 text-sm hover:brightness-110 shadow-[0_0_10px_rgba(0,170,255,0.4)] cursor-pointer">
+              7-DAY SNIP
+            </button>
+          </div>
         </div>
 
         {/* Chart Card */}
@@ -249,7 +336,15 @@ export function ESPCPDailyProduction({ mayData }: { mayData: any[] }) {
 
         {/* Data Table */}
         <div className="bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] border border-white/5 rounded-xl p-4 overflow-hidden">
-          <div className="text-xs text-[#9aa6b2] mb-3">Active Agents - Sorted by Total</div>
+          <div className="flex justify-between items-center mb-3">
+            <div className="text-xs text-[#9aa6b2]">Active Agents - Sorted by Total</div>
+            <button 
+              onClick={() => setSortDatesDesc(!sortDatesDesc)}
+              className="text-[#00aaff] text-xs font-mono border border-[#00aaff]/30 px-3 py-1 rounded bg-[#00aaff]/10 hover:bg-[#00aaff]/20 cursor-pointer"
+            >
+              [ REVERSE DATES: {sortDatesDesc ? '31 → 1' : '1 → 31'} ]
+            </button>
+          </div>
           <div className="overflow-x-auto max-h-[500px]">
             <table className="w-full border-collapse text-sm whitespace-nowrap">
               <thead className="bg-black/50 sticky top-0 z-20">

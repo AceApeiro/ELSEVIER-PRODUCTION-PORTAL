@@ -98,14 +98,6 @@ export default function Root() {
             </motion.h1>
           </AnimatePresence>
           <div className="h-16"></div>
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="text-slate-400 text-lg md:text-xl tracking-widest uppercase font-mono mt-12"
-          >
-            Select Operation Dashboard
-          </motion.p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -117,22 +109,21 @@ export default function Root() {
           >
             <div className="absolute inset-0 bg-cyan-500/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             <MonitorPlay className="w-16 h-16 text-cyan-400 mb-6 group-hover:text-white transition-colors z-10" />
-            <span className="text-2xl font-bold text-cyan-400 font-['Rajdhani'] tracking-widest z-10">ACE</span>
+            <span className="text-2xl font-bold text-cyan-400 font-['Rajdhani'] tracking-widest z-10">ESPCP</span>
             <span className="text-xs text-cyan-500 mt-2 font-mono z-10">PRODUCTION SUMMARY</span>
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(255, 0, 102, 0.4)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(139, 92, 246, 0.4)' }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setCurrentProject('espcp_rework')}
-            className="flex flex-col items-center justify-center p-10 bg-slate-900/50 border border-[#ff0066]/50 rounded-lg backdrop-blur-sm group relative overflow-hidden"
+            onClick={() => setCurrentProject('bookcar')}
+            className="flex flex-col items-center justify-center p-10 bg-slate-900/50 border border-purple-500/50 rounded-lg backdrop-blur-sm group relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-[#ff0066]/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            <MonitorPlay className="w-16 h-16 text-[#ff0066] mb-6 group-hover:text-white transition-colors z-10" />
-            <span className="text-2xl font-bold text-[#ff0066] font-['Rajdhani'] tracking-widest z-10">ESPCP REWORK</span>
-            <span className="text-xs text-[#ff0066] mt-2 font-mono z-10">SHEET ACCESS / AUTH</span>
+            <div className="absolute inset-0 bg-purple-500/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            <Car className="w-16 h-16 text-purple-400 mb-6 group-hover:text-white transition-colors z-10" />
+            <span className="text-2xl font-bold text-purple-400 font-['Rajdhani'] tracking-widest z-10">BOOKCAR</span>
+            <span className="text-xs text-purple-500 mt-2 font-mono z-10">DATA INTERFACE</span>
           </motion.button>
-
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(59, 130, 246, 0.4)' }}
             whileTap={{ scale: 0.95 }}
@@ -146,15 +137,15 @@ export default function Root() {
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(139, 92, 246, 0.4)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(255, 0, 102, 0.4)' }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setCurrentProject('bookcar')}
-            className="flex flex-col items-center justify-center p-10 bg-slate-900/50 border border-purple-500/50 rounded-lg backdrop-blur-sm group relative overflow-hidden"
+            onClick={() => setCurrentProject('espcp_rework')}
+            className="flex flex-col items-center justify-center p-10 bg-slate-900/50 border border-[#ff0066]/50 rounded-lg backdrop-blur-sm group relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-purple-500/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            <Car className="w-16 h-16 text-purple-400 mb-6 group-hover:text-white transition-colors z-10" />
-            <span className="text-2xl font-bold text-purple-400 font-['Rajdhani'] tracking-widest z-10">BOOKCAR</span>
-            <span className="text-xs text-purple-500 mt-2 font-mono z-10">DATA INTERFACE</span>
+            <div className="absolute inset-0 bg-[#ff0066]/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            <MonitorPlay className="w-16 h-16 text-[#ff0066] mb-6 group-hover:text-white transition-colors z-10" />
+            <span className="text-2xl font-bold text-[#ff0066] font-['Rajdhani'] tracking-widest z-10">ESPCP REWORK</span>
+            <span className="text-xs text-[#ff0066] mt-2 font-mono z-10">SHEET ACCESS / AUTH</span>
           </motion.button>
         </div>
       </motion.div>

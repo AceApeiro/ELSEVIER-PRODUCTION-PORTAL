@@ -144,7 +144,7 @@ export default function ESPCPDashboard({ setCurrentProject }: { setCurrentProjec
       <div className="relative z-30 flex flex-wrap items-center justify-between px-6 py-4 bg-black/60 backdrop-blur-md border-b-2 border-[#00f2ff]/30 shadow-[0_0_20px_rgba(0,170,255,0.2)]">
         <div className="flex items-center gap-4 mb-2 md:mb-0">
           <div className="text-2xl font-bold font-['Rajdhani'] tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#00f2ff] to-[#0066ff]">
-            ACE
+            ESPCP
           </div>
           <div className="h-4 w-[2px] bg-[#00f2ff]/30 mx-2 hidden md:block" />
           <div className="flex gap-4 flex-wrap">
@@ -205,6 +205,7 @@ export default function ESPCPDashboard({ setCurrentProject }: { setCurrentProjec
         {activeView === 'ACE_GRID' && (
           <NexusGridView 
             agentData={agentData} 
+            mayData={mayData}
             selectedAgentIdx={selectedAgentIdx}
             setSelectedAgentIdx={setSelectedAgentIdx}
             sidebarOpen={sidebarOpen}
@@ -466,7 +467,7 @@ function ProductionView({ monthlyData, groupedMonths, currentYear, setCurrentYea
   );
 }
 
-function NexusGridView({ agentData, selectedAgentIdx, setSelectedAgentIdx, sidebarOpen, setSidebarOpen }: any) {
+function NexusGridView({ agentData, mayData, selectedAgentIdx, setSelectedAgentIdx, sidebarOpen, setSidebarOpen }: any) {
   const agent = agentData[selectedAgentIdx];
   const [sortMonthsDescending, setSortMonthsDescending] = useState(false);
   if (!agent) return null;
@@ -480,13 +481,11 @@ function NexusGridView({ agentData, selectedAgentIdx, setSelectedAgentIdx, sideb
   let peak = {v: -1, n: ''};
   let low = {v: 999, n: ''};
 
-
   keys.forEach(k => {
     const v = parseCSVNum(agent[k]);
     const cleanLabel = k.split(' - ')[0].toUpperCase();
     labels.push(cleanLabel);
     values.push(v);
-
     if (v > peak.v) peak = {v, n: cleanLabel};
     if (v < low.v && v > 0) low = {v, n: cleanLabel};
   });
@@ -503,7 +502,7 @@ function NexusGridView({ agentData, selectedAgentIdx, setSelectedAgentIdx, sideb
         >
           {sidebarOpen ? <X/> : <Menu/>}
         </button>
-        <h1 className="text-3xl tracking-widest font-['Rajdhani'] font-bold text-white drop-shadow-[0_0_8px_rgba(0,242,255,0.7)] m-0">ACE_OS</h1>
+        <h1 className="text-3xl tracking-widest font-['Rajdhani'] font-bold text-white drop-shadow-[0_0_8px_rgba(0,242,255,0.7)] m-0">ESPCP_OS</h1>
         <p className="text-[#0066ff] text-xs font-bold mb-10 tracking-widest">PERFORMANCE_GRID_V5</p>
 
         <div className="mb-10">
@@ -579,14 +578,18 @@ function NexusGridView({ agentData, selectedAgentIdx, setSelectedAgentIdx, sideb
         </div>
 
         <div className="bg-[#000a14]/80 border border-[#00f2ff]/30 rounded-sm shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-          <div className="p-4 border-b border-[#00f2ff]/20 flex justify-between items-center bg-[#00f2ff]/5">
-            <h3 className="text-[#00f2ff] font-['Rajdhani'] font-bold tracking-widest text-lg m-0">MONTHLY_DATA_CYCLES</h3>
-            <button 
-              onClick={() => setSortMonthsDescending(!sortMonthsDescending)}
-              className="text-[#00f2ff] font-mono text-xs border border-[#00f2ff]/30 px-3 py-1 hover:bg-[#00f2ff]/10"
-            >
-              [ SORT: {sortMonthsDescending ? 'RECENT FIRST' : 'OLDEST FIRST'} ]
-            </button>
+          <div className="p-4 border-b border-[#00f2ff]/20 flex justify-between items-center bg-[#00f2ff]/5 flex-wrap gap-2">
+            <h3 className="text-[#00f2ff] font-['Rajdhani'] font-bold tracking-widest text-lg m-0 flex items-center gap-2">
+              MONTHLY_DATA_CYCLES
+            </h3>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setSortMonthsDescending(!sortMonthsDescending)}
+                className="text-[#00f2ff] font-mono text-xs border border-[#00f2ff]/30 px-3 py-1 hover:bg-[#00f2ff]/10"
+              >
+                [ SORT: {sortMonthsDescending ? 'DESCENDING' : 'ASCENDING'} ]
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
