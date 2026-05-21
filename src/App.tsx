@@ -57,11 +57,6 @@ export default function App({ onClose }: { onClose?: () => void }) {
     key: 'total',
     direction: 'desc'
   });
-  const [theme, setTheme] = useState('dark');
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
 
   const handleSort = (key: SortKey) => {
     setSortConfig(current => ({
@@ -202,19 +197,6 @@ export default function App({ onClose }: { onClose?: () => void }) {
                 <BarChart3 className="h-4 w-4" />
                 Data Analytics
               </button>
-              <div className="relative group flex items-center ml-4 pl-4 border-l border-slate-700">
-                <Palette className="w-4 h-4 text-app-text-muted mr-2" />
-                <select 
-                  className="bg-transparent text-sm text-app-text-main font-medium focus:outline-none cursor-pointer appearance-none pr-4"
-                  value={theme}
-                  onChange={(e) => setTheme(e.target.value)}
-                >
-                  <option value="dark" className="bg-[#0a0f1c] text-white">Default Dark</option>
-                  <option value="light-1" className="bg-slate-50 text-slate-900">Light Corporate</option>
-                  <option value="light-2" className="bg-amber-50 text-amber-900">Warm Light</option>
-                  <option value="dark-2" className="bg-[#1c0a0f] text-pink-200">Neon Night</option>
-                </select>
-              </div>
             </div>
           </div>
         </div>
