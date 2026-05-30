@@ -74,6 +74,15 @@
   --theme-app-accent: #c77dff;
 }
 
+[data-theme="bee-swarm"] {
+  --theme-app-bg: #0d0900;
+  --theme-app-card: #1f1500;
+  --theme-app-border: #ffcc00;
+  --theme-app-text-main: #fff0b3;
+  --theme-app-text-muted: #cca300;
+  --theme-app-accent: #ffcc00;
+}
+
 html, body {
   background-color: var(--theme-app-bg);
   color: var(--theme-app-text-main);

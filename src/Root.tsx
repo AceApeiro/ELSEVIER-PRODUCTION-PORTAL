@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useState } from "react";
 import App from "./App";
 import { ApeiroLogo } from "./components/ApeiroLogo";
+import { BeeSwarm } from "./components/BeeSwarm";
+import ESPCPDailyPlan from "./ESPCPDailyPlan";
 import ESPCPDashboard from "./ESPCPDashboard";
 import ESPCPRework from "./ESPCPRework";
 
@@ -43,7 +45,11 @@ export default function Root() {
 				<option value="neon-purple" className="bg-[#0a0f1c]">
 					NEON_PURPLE
 				</option>
+				<option value="bee-swarm" className="bg-[#0a0f1c]">
+					BEE_SWARM
+				</option>
 			</select>
+			<BeeSwarm isEnabled={theme === "bee-swarm"} />
 		</div>
 	);
 
@@ -124,6 +130,16 @@ export default function Root() {
             100% { transform: translateX(-100%); }
           }
         `}</style>
+			</div>
+		);
+	}
+
+	if (currentProject === "espcp_daily_plan") {
+		return (
+			<div className="relative w-full min-h-screen">
+				<GlobalBackButton />
+				<GlobalThemeSelector />
+				<ESPCPDailyPlan setCurrentProject={setCurrentProject} />
 			</div>
 		);
 	}
@@ -249,10 +265,29 @@ export default function Root() {
 						<div className="absolute inset-0 bg-[#ff0066]/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
 						<MonitorPlay className="w-16 h-16 text-[#ff0066] mb-6 group-hover:text-white transition-colors z-10" />
 						<span className="text-2xl font-bold text-[#ff0066] font-['Rajdhani'] tracking-widest z-10">
-							ESPCP REWORK
+							REWORK PORTAL
 						</span>
 						<span className="text-xs text-[#ff0066] mt-2 font-mono z-10">
 							SHEET ACCESS / AUTH
+						</span>
+					</motion.button>
+
+					<motion.button
+						whileHover={{
+							scale: 1.05,
+							boxShadow: "0 0 30px rgba(0, 255, 128, 0.4)",
+						}}
+						whileTap={{ scale: 0.95 }}
+						onClick={() => setCurrentProject("espcp_daily_plan")}
+						className="flex flex-col items-center justify-center p-10 bg-slate-900/50 border border-green-500/50 rounded-lg backdrop-blur-sm group relative overflow-hidden"
+					>
+						<div className="absolute inset-0 bg-green-500/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+						<Database className="w-16 h-16 text-green-400 mb-6 group-hover:text-white transition-colors z-10" />
+						<span className="text-2xl font-bold text-green-400 font-['Rajdhani'] tracking-widest z-10">
+							DAILY PLAN
+						</span>
+						<span className="text-xs text-green-500 mt-2 font-mono z-10">
+							ESPCP SCHEDULE
 						</span>
 					</motion.button>
 				</div>
